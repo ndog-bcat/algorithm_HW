@@ -3,7 +3,7 @@
 #include <string>
 #include "my_quick_sorts.h"
 using namespace std;
-#define N_MAX_RECORDS 1024 * 1024 * 8
+#define N_MAX_RECORDS (1024 * 1024 * 8)
 RECORD records[N_MAX_RECORDS];
 
 // RECORD 비교 함수. non-decreasing order

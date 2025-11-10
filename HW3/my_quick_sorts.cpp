@@ -246,7 +246,7 @@ void my_qsort_final_cal(void *base, size_t *idxs, size_t num, size_t size, _Cmpf
 }
 
 void my_qsort_final(void *base, size_t num, size_t size, _Cmpfun *cmp){
-    // 인덱스 배열 생성. 출력해보니까 8바이트라서 확실히 레코드보다 정렬이 빠를것이 확실하다
+    // 인덱스 배열 생성. 출력해보니까 8바이트라서 확실히 레코드보다 정렬이 빠를것으로 생각된다
     size_t *idxs = (size_t*)malloc(num * sizeof(size_t));
     for (size_t i = 0; i < num; i++){
         idxs[i] = i;
