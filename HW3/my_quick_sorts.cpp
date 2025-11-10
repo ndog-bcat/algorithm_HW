@@ -4,16 +4,14 @@
 
 #define INSERTION_SORT_THRESHOLD 20
 
-void swap(void *a, void *b, size_t size){
-    char *temp = (char*)malloc(size);
+void swap(void *a, void *b, size_t size, char *temp){
     memcpy(temp, a, size);
     memcpy(a, b, size);
     memcpy(b, temp, size);
-    free(temp);
 }
 
 // orig 파티션 함수
-char *partition_orig(void *base, size_t num, size_t size, _Cmpfun *cmp){
+char *partition_orig(void *base, size_t num, size_t size, _Cmpfun *cmp, char *temp){
     char *pivot, *left, *right;
     pivot = (char*)base;
     left = (char*)base + size;
@@ -28,16 +26,16 @@ char *partition_orig(void *base, size_t num, size_t size, _Cmpfun *cmp){
         if (left >= right){
             break;
         }
-        swap(left, right, size);
+        swap(left, right, size, temp);
         left += size;
         right -= size;
     }
-    swap(pivot, right, size);
+    swap(pivot, right, size, temp);
     return right;
 }
 
 // median 파티션 함수
-char *partition_median(void *base, size_t num, size_t size, _Cmpfun *cmp)
+char *partition_median(void *base, size_t num, size_t size, _Cmpfun *cmp, char *temp)
 {
     char *pivot, *left, *right, *mid, *big;
     pivot = (char*)base;
@@ -45,11 +43,11 @@ char *partition_median(void *base, size_t num, size_t size, _Cmpfun *cmp)
     big = (char*)base + (num-1)*size;
 
     // pivot, mid, big을 non-decreasing order로 정렬
-    if (cmp(pivot, mid) > 0) swap(pivot, mid, size);
-    if (cmp(pivot, big) > 0) swap(pivot, big, size);
-    if (cmp(mid, big) > 0) swap(mid, big, size);
+    if (cmp(pivot, mid) > 0) swap(pivot, mid, size, temp);
+    if (cmp(pivot, big) > 0) swap(pivot, big, size, temp);
+    if (cmp(mid, big) > 0) swap(mid, big, size, temp);
     // median을 pivot으로 설정
-    swap(mid, pivot, size);
+    swap(mid, pivot, size, temp);
     
     left = (char*)base + size;
     right = (char*)base + (num-1)*size;
@@ -63,11 +61,11 @@ char *partition_median(void *base, size_t num, size_t size, _Cmpfun *cmp)
         if (left >= right){
             break;
         }
-        swap(left, right, size);
+        swap(left, right, size, temp);
         left += size;
         right -= size;
     }
-    swap(pivot, right, size);
+    swap(pivot, right, size, temp);
     return right;
 }
 
@@ -76,17 +74,24 @@ void my_qsort(void *base, size_t num, size_t size, _Cmpfun *cmp)
     qsort(base, num, size, cmp);
 }
 
-void my_qsort_orig(void *base, size_t num, size_t size, _Cmpfun *cmp)
+void my_qsort_orig_cal(void *base, size_t num, size_t size, _Cmpfun *cmp, char *temp)
 {
     if (num <= 1) return;
-    char *pivot = partition_orig(base, num, size, cmp);
+    char *pivot = partition_orig(base, num, size, cmp, temp);
     size_t left_size = (pivot - (char*)base) / size;
     size_t right_size = num - left_size - 1;
-    my_qsort_orig(base, left_size, size, cmp);
-    my_qsort_orig(pivot+size, right_size, size, cmp);
+    my_qsort_orig_cal(base, left_size, size, cmp, temp);
+    my_qsort_orig_cal(pivot+size, right_size, size, cmp, temp);
 }
 
-void my_qsort_median_insert_cal(void *base, size_t num, size_t size, _Cmpfun *cmp, void *key){
+void my_qsort_orig(void *base, size_t num, size_t size, _Cmpfun *cmp){
+    char *temp;
+    temp = (char*)malloc(size);
+    my_qsort_orig_cal(base, num, size, cmp, temp);
+    free(temp);
+}
+
+void my_qsort_median_insert_cal(void *base, size_t num, size_t size, _Cmpfun *cmp, void *key, char *temp){
     if (num <= INSERTION_SORT_THRESHOLD){
         char *a = (char*)base;
         size_t j;
@@ -102,23 +107,26 @@ void my_qsort_median_insert_cal(void *base, size_t num, size_t size, _Cmpfun *cm
         return;
     }
     else{
-        char *pivot = partition_median(base, num, size, cmp);
+        char *pivot = partition_median(base, num, size, cmp, temp);
         size_t left_size = (pivot - (char*)base) / size;
         size_t right_size = num - left_size - 1;
-        my_qsort_median_insert_cal(base, left_size, size, cmp, key);
-        my_qsort_median_insert_cal(pivot+size, right_size, size, cmp, key);
+        my_qsort_median_insert_cal(base, left_size, size, cmp, key, temp);
+        my_qsort_median_insert_cal(pivot+size, right_size, size, cmp, key, temp);
     }
 }
 
 void my_qsort_median_insert(void *base, size_t num, size_t size, _Cmpfun *cmp)
 {
-    static void *key;
+    void *key;
+    char *temp;
     key = (char*)malloc(size);
-    my_qsort_median_insert_cal(base, num, size, cmp, key);
+    temp = (char*)malloc(size);
+    my_qsort_median_insert_cal(base, num, size, cmp, key, temp);
     free(key);
+    free(temp);
 }
 
-void my_qsort_median_insert_iter_cal(void *base, size_t num, size_t size, _Cmpfun *cmp, void *key)
+void my_qsort_median_insert_iter_cal(void *base, size_t num, size_t size, _Cmpfun *cmp, void *key, char *temp)
 {
     while (num > 1){
         if (num <= INSERTION_SORT_THRESHOLD){
@@ -135,26 +143,29 @@ void my_qsort_median_insert_iter_cal(void *base, size_t num, size_t size, _Cmpfu
             }
             return;
         }
-        char *pivot = partition_median(base, num, size, cmp);
+        char *pivot = partition_median(base, num, size, cmp, temp);
         size_t left_size = (pivot - (char*)base) / size;
         size_t right_size = num - left_size - 1;
         if (left_size < right_size){
-            my_qsort_median_insert_iter_cal(base, left_size, size, cmp, key);
+            my_qsort_median_insert_iter_cal(base, left_size, size, cmp, key, temp);
             base = pivot + size;
             num = right_size;
         }
         else{
-            my_qsort_median_insert_iter_cal(pivot+size, right_size, size, cmp, key);
+            my_qsort_median_insert_iter_cal(pivot+size, right_size, size, cmp, key, temp);
             num = left_size;
         }
     }   
 }
 
 void my_qsort_median_insert_iter(void *base, size_t num, size_t size, _Cmpfun *cmp){
-    static void *key;
+    void *key;
+    char *temp;
     key = (char*)malloc(size);
-    my_qsort_median_insert_iter_cal(base, num, size, cmp, key);
+    temp = (char*)malloc(size);
+    my_qsort_median_insert_iter_cal(base, num, size, cmp, key, temp);
     free(key);
+    free(temp);
 }
 
 // final함수는 score기준으로 인덱스 배열을 정렬하기 때문에,
@@ -235,7 +246,7 @@ void my_qsort_final_cal(void *base, size_t *idxs, size_t num, size_t size, _Cmpf
 }
 
 void my_qsort_final(void *base, size_t num, size_t size, _Cmpfun *cmp){
-    // 인덱스 배열 생성. 출력해보니까 8바이트라서 확실히 레코드보다는 정렬이 빠를듯
+    // 인덱스 배열 생성. 출력해보니까 8바이트라서 확실히 레코드보다 정렬이 빠를것이 확실하다
     size_t *idxs = (size_t*)malloc(num * sizeof(size_t));
     for (size_t i = 0; i < num; i++){
         idxs[i] = i;
