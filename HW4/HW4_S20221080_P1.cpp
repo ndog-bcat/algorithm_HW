@@ -32,19 +32,19 @@ int main(){
     // x, y 문자열 체크배열. 0: gap, 1: mismatch, 2: match
     vector<int> x_check(len_x+1, 0);
     vector<int> y_check(len_y+1, 0);
-    for (int i = 1; i < len_x; i++){
+    for (int i = 1; i <= len_x; i++){
         read_file.read(reinterpret_cast<char*>(&x[i]), sizeof(char));
     }
-    for (int i = 1; i < len_y; i++){
+    for (int i = 1; i <= len_y; i++){
         read_file.read(reinterpret_cast<char*>(&y[i]), sizeof(char));
     }
     read_file.close();
     int score1, score2, score3, temp, one, two, three;
     bool is_match;
     // 계산 과정
-    vector<vector<int>> mat(len_x, vector<int>(len_y,0));
-    vector<vector<int>> check(len_x, vector<int>(len_y,0));
-    // check --> gap_x: 0, gap_y: 1, mismatch: 2
+    vector<vector<int>> mat(len_x+1, vector<int>(len_y+1,0));
+    vector<vector<int>> check(len_x+1, vector<int>(len_y+1,0));
+    // check --> gap_x: 0, gap_y: 1, mismatch: 2, match: 3
     for (int i=0; i<=len_x; i++){
         for (int j=0; j<=len_y; j++){
             if (i==0){
@@ -84,11 +84,18 @@ int main(){
                 } // one, two, three non-decreasing 정렬
                 if (score1 == three){
                     if (is_match){
+                        check[i][j]=3;
                     }
-                    else{}
+                    else{
+                        check[i][j]=2;
+                    }
                 }
-                else if (score2 == three){}
-                else if (score3 == three){}
+                else if (score2 == three){
+                    check[i][j]=1;
+                }
+                else if (score3 == three){
+                    check[i][j]=0;
+                }
             }
         }
     }
