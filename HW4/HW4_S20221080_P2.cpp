@@ -48,7 +48,7 @@ int main(){
         arr[0][0] = 1;
         arr[0][1] = 0;
         for (int i=1; i<len; i++){
-            arr[i][0] = i+1;
+            arr[i][0] = i+2; // 불가능한 값으로 초기화
         }
         for (int i=1; i<len; i++){
             min = i+1;
@@ -61,7 +61,7 @@ int main(){
                 }
             }
             for (int j=1; j<i; j++){
-                if (arr[i-1][j] != i && s[j-1] == s[i]){
+                if (arr[i-1][j] != i+1 && s[j-1] == s[i]){ // i-1행에서 i+1은 불가능한 개수.
                     arr[i][j-1] = arr[j-1][j-1];
                     if (arr[i][j-1] < min){
                         min = arr[i][j-1];
@@ -69,7 +69,7 @@ int main(){
                     }
                 } // 바로 전 원소~j번째까지 회문이라면, j-1번째와 i가 같을 시에는 j-1~i도 회문
                 else{
-                    arr[i][j] = i+1;
+                    arr[i][j] = i+2; // 회문이 아닐 시 불가능한 값으로 초기화
                 }
             }
             arr[i][i] = arr[i-1][arr[i-1][i]] + 1;
