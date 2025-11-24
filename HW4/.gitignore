@@ -1,0 +1,88 @@
+# =======================================
+# Visual Studio / C++ build artifacts
+# =======================================
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+Debug/
+Release/
+x64/
+x86/
+[Bb]uild/
+[Bb]in/
+[Oo]bj/
+
+# Compiled binaries and intermediate files
+*.exe
+*.dll
+*.pdb
+*.lib
+*.obj
+*.idb
+*.ipch
+*.pch
+*.ilk
+*.exp
+
+# Logs / cache
+*.log
+*.tlog
+*.lastbuildstate
+*.cache
+*.db
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+
+# Temporary / backup files
+*.tmp
+*.bak
+*.old
+
+# =======================================
+# 🧩 Your project specific ignores
+# =======================================
+
+# Test data files (large binary datasets)
+*.bin
+*.dat
+*.raw
+
+# Auto-generated reports or exports
+*.csv
+*.tsv
+*.xlsx
+*.json
+*.zip
+
+# =======================================
+# System and editor cruft
+# =======================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# IDE-specific
+.idea/
+*.iml
+*.swp
+*.swo
+*.log
+
+# =======================================
+# Custom for your HW3 project
+# =======================================
+# Ignore any test commands or output files
+test_commands.txt
+HW3_commands.txt
+sorted_array*.bin
+unsorted_array*.bin
+unsorted_array.bin
