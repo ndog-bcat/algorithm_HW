@@ -41,6 +41,7 @@ int main(){
         vector<vector<int>> arr(len, vector<int>(len+1, 0));
         // arr[i][j]: i번째까지의 문자열에서 j번째부터 회문일 시 그 경우에 해당하는 회문의 최소 개수
         // or j번째부터 i까지는 회문이 아닌 경우 i+1(최대값)
+        // arr[i][i+1]: i번째까지 문자열 중 최소 회문을 만들때 i까지의 회문이 시작하는 인덱스 번호
         for (int i=0; i<len; i++){
             read_file >> s[i];
         }
