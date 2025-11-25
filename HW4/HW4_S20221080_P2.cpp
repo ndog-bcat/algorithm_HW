@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <vector> //what
 using namespace std;
 void print_res(vector<vector<int>> arr, vector<int> s, int idx, ofstream &write_file){
     int start_idx = arr[idx][idx+1];
